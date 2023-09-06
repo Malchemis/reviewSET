@@ -17,7 +17,7 @@ parser.add_argument('--query', type=str, default='sound+event+detection', help='
 parser.add_argument('--fields', type=str, default='paperId,title,abstract,authors,openAccessPdf,fieldsOfStudy,s2FieldsOfStudy,externalIds', 
                     help='Fields to retrieve from the Semantic Scholar API. Format: field1,field2,field3,...')
 parser.add_argument('--limit', type=int, default=100, help='Number of records to retrieve per request')
-
+parser.add_argument('--cap', type=int, default=1000, help='Maximum number of records to retrieve')
 # Parse the arguments
 args = parser.parse_args()
 
@@ -36,6 +36,7 @@ json_folder = args.json_folder
 query = args.query
 fields = args.fields
 limit = args.limit
+cap = args.cap
 
 ### FUNCTIONS ###
 
@@ -70,7 +71,7 @@ def send_request_and_process_response():
     url = f"https://api.semanticscholar.org/graph/v1/paper/search?query={query}&fields={fields}&offset={offset}&limit={limit}"
 
     # Send a GET request
-    response = r = requests.get(url)
+    response = requests.get(url)
 
     # the filename
     name = query.replace('+', '_')
@@ -117,19 +118,39 @@ def send_request_and_process_response():
         df.to_csv(f'{data_folder}/{name}_{offset}.csv', index=False)
 
         print(f"Data saved to '{data_folder}/sound_event_detection_reviews_{offset}.csv'")
+        
+        return 0
     else:
         print("Failed to retrieve data")
         for key, value in response.json().items():
             print(f"{key}: {value}")
+        return -1
+    
+    if len(data) < limit:
+        return 1
+    
+    return -2 # it should never reach this point
 
 ### MAIN ###
-# Loop to send a request every 10 minutes
-while offset < 1000:
+while offset < cap:
     print(f"Retrieving data from offset {offset}")        
-    send_request_and_process_response()
-    offset += 100
+    
+    res = send_request_and_process_response()
+    
+    # Check if the request was successful
+    if res == -2:
+        print("Something went wrong")
+    if res == -1:
+        print("Error: For more information, check the response from the API")
+    if res == 0:
+        offset += limit
+        print("Data retrieved successfully, moving to the next offset")
+    if res == 1:
+        print("No more data to retrieve")
+        break
+        
     print("Waiting for 10 minutes due to API restrictions...")
-    # Show a clock
+    # Countdown timer
     for remaining in range(600, 0, -1):
         sys.stdout.write("\r")
         sys.stdout.write("{:2d} seconds remaining.".format(remaining)) 
