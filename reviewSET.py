@@ -103,4 +103,4 @@ if __name__ == "__main__":
             sys.stdout.flush()
             time.sleep(1)
         print() # new line
-    os.system("!python stats.py")
+    os.system("python stats.py")
