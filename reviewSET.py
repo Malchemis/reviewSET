@@ -3,8 +3,9 @@ import requests
 import json
 import time
 import sys
+import os
 
-# Import the functions
+# Import the local functions
 from local.utils import obtain_string_from_list, obtain_keywords, combine_keywords
 from local.arg import create_arg_parser
 
@@ -102,3 +103,4 @@ if __name__ == "__main__":
             sys.stdout.flush()
             time.sleep(1)
         print() # new line
+    os.system("!python stats.py")
