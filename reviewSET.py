@@ -3,68 +3,15 @@ import requests
 import json
 import time
 import sys
-import argparse
-import os
 
-### ARGUMENTS ###
+# Import the functions
+from local.utils import obtain_string_from_list, obtain_keywords, combine_keywords
+from local.arg import create_arg_parser
 
-# Create an argument parser
-parser = argparse.ArgumentParser(description='Retrieve reviews from the Semantic Scholar API')
-parser.add_argument('--offset', type=int, default=100, help='Initial offset')
-parser.add_argument('--data_folder', type=str, default='data', help='Data folder')
-parser.add_argument('--json_folder', type=str, default='jsons', help='JSON folder')
-parser.add_argument('--query', type=str, default='sound+event+detection', help='Query for the Semantic Scholar API')
-parser.add_argument('--fields', type=str, default='paperId,title,abstract,authors,openAccessPdf,fieldsOfStudy,s2FieldsOfStudy,externalIds', 
-                    help='Fields to retrieve from the Semantic Scholar API. Format: field1,field2,field3,...')
-parser.add_argument('--limit', type=int, default=100, help='Number of records to retrieve per request')
-parser.add_argument('--cap', type=int, default=1000, help='Maximum number of records to retrieve')
-# Parse the arguments
-args = parser.parse_args()
-
-# Check if the data folder exists, if not, create it
-if not os.path.exists(args.data_folder):
-    os.makedirs(args.data_folder)
-
-# Check if the json folder exists, if not, create it
-if not os.path.exists(args.json_folder):
-    os.makedirs(args.json_folder)
-
-# Use the arguments in the code
-offset = args.offset
-data_folder = args.data_folder
-json_folder = args.json_folder
-query = args.query
-fields = args.fields
-limit = args.limit
-cap = args.cap
+# Retrieve the arguments
+offset, data_folder, json_folder, query, fields, limit, cap = create_arg_parser()
 
 ### FUNCTIONS ###
-
-def obtain_string_from_list(list):
-    """Obtain a string from a list of strings."""
-    string = ''
-    for item in list:
-        string += item + ', '
-    return string[:-2]    
-
-def combine_keywords(keywords1, keywords2):
-    """Combine two lists of keywords into a single list."""
-    keywords = []
-    for keyword in keywords1:
-        if keyword not in keywords:
-            keywords.append(keyword)
-    for keyword in keywords2:
-        if keyword not in keywords:
-            keywords.append(keyword)
-    return keywords
-
-def obtain_keywords(dict_field, keyword):
-    """Obtain the desired keywords (for example category) from the specified dictionary field."""
-    keywords = []
-    for field in dict_field:
-        keywords.append(field[keyword])
-    return keywords
-
 def send_request_and_process_response():
     """Send a request to the Semantic Scholar API and process the response."""
     # Semantic Scholar API endpoint
@@ -119,16 +66,13 @@ def send_request_and_process_response():
 
         print(f"Data saved to '{data_folder}/sound_event_detection_reviews_{offset}.csv'")
         
-        return 0
+        return 0 if len(data) > 0 else 1
     else:
         print("Failed to retrieve data")
         for key, value in response.json().items():
             print(f"{key}: {value}")
         return -1
-    
-    if len(data) < limit:
-        return 1
-    
+        
     return -2 # it should never reach this point
 
 ### MAIN ###
