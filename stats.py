@@ -1,5 +1,5 @@
 import os
-import panda as pd
+import pandas as pd
 import ydata_profiling as ydp
 
 data_folder = 'data'
