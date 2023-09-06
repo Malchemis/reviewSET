@@ -1,6 +1,6 @@
 ## Project Overview
 
-This repository is designed to facilitate the tracking and classification of reviews for meta-analysis. The primary focus is on sound event detection reviews.
+This repository is designed to facilitate the tracking and classification of reviews for meta-analysis. The primary focus (see defaults parameter) is on sound event detection reviews.
 
 ## reviewSET.py
 
@@ -15,7 +15,7 @@ The script requires several Python libraries, including:
 - json
 - argparse
 
-(you can run the requirement.sh script to install these libraries)
+(you can run the requirements.sh script to install these libraries)
 
 Ensure these libraries are installed before running the script.
 
