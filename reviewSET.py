@@ -100,3 +100,4 @@ while offset < cap:
         sys.stdout.write("{:2d} seconds remaining.".format(remaining)) 
         sys.stdout.flush()
         time.sleep(1)
+    print() # new line
