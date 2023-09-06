@@ -76,28 +76,29 @@ def send_request_and_process_response():
     return -2 # it should never reach this point
 
 ### MAIN ###
-while offset < cap:
-    print(f"Retrieving data from offset {offset}")        
-    
-    res = send_request_and_process_response()
-    
-    # Check if the request was successful
-    if res == -2:
-        print("Something went wrong")
-    if res == -1:
-        print("Error: For more information, check the response from the API")
-    if res == 0:
-        offset += limit
-        print("Data retrieved successfully, moving to the next offset")
-    if res == 1:
-        print("No more data to retrieve")
-        break
+if __name__ == "__main__":
+    while offset < cap:
+        print(f"Retrieving data from offset {offset}")        
         
-    print("Waiting for 10 minutes due to API restrictions...")
-    # Countdown timer
-    for remaining in range(600, 0, -1):
-        sys.stdout.write("\r")
-        sys.stdout.write("{:2d} seconds remaining.".format(remaining)) 
-        sys.stdout.flush()
-        time.sleep(1)
-    print() # new line
+        res = send_request_and_process_response()
+        
+        # Check if the request was successful
+        if res == -2:
+            print("Something went wrong")
+        if res == -1:
+            print("Error: For more information, check the response from the API")
+        if res == 0:
+            offset += limit
+            print("Data retrieved successfully, moving to the next offset")
+        if res == 1:
+            print("No more data to retrieve")
+            break
+            
+        print("Waiting for 10 minutes due to API restrictions...")
+        # Countdown timer
+        for remaining in range(600, 0, -1):
+            sys.stdout.write("\r")
+            sys.stdout.write("{:2d} seconds remaining.".format(remaining)) 
+            sys.stdout.flush()
+            time.sleep(1)
+        print() # new line
