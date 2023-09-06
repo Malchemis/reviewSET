@@ -30,4 +30,4 @@ def create_arg_parser():
         os.makedirs(args.json_folder)
 
     # Use the arguments in the code
-    return args   
+    return args.offset, args.data_folder, args.json_folder, args.query, args.fields, args.limit, args.cap
