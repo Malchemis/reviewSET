@@ -1,38 +1,41 @@
-## Project Overview
+# Sound Event Detection Reviews
 
-This repository is designed to facilitate the tracking and classification of reviews for meta-analysis. The primary focus (see defaults parameter) is on sound event detection reviews.
+This repository is dedicated to tracking and classifying reviews for meta-analysis, with a primary focus on sound event detection reviews. The main script interacts with the Semantic Scholar API to retrieve review data.
+
+## Project Structure
+
+The project is organized as follows:
+
+- `reviewSET.py`: The main script that interacts with the Semantic Scholar API to retrieve review data.
+- `local/` directory: This directory contains utility scripts:
+  - `arg.py`: This script is used to parse command-line arguments which include `offset`, `data_folder`, `json_folder`, `query`, `fields`, `limit`, and `cap`.
+  - `requirements.sh`: This script installs pandas, request, argparse, os, json, time, and sys libraries using pip.
+  - `utils.py`: This file contains utility functions used by `reviewSET.py`.
+
+The python executable will create a `data/` directory and a `json/` directory if they do not already exist. The `data/` directory will contain the CSV files, and the `json/` directory will contain the JSON files. If `stats.py` is run, it will create a `save/` directory that contains the combined CSV files and a stat profile.
+
+## Utility Functions
+
+The `utils.py` file contains the following functions:
+
+- `obtain_string_from_list`: This function takes a list of strings and joins them all into one single string.
+- `combine_keywords`: This function takes two lists of keywords, combines them into a single list, and removes any duplicates.
+- `obtain_keywords`: This function takes a dictionary field and a keyword and returns a list of the desired keywords from the specified field.
 
 ## reviewSET.py
 
-The `reviewSET.py` script is a Python script that interacts with the Semantic Scholar API to retrieve review data.
+The `reviewSET.py` script is a Python script that interacts with the Semantic Scholar API to retrieve review data. It starts with the defined parameters and sends remote requests to Semantic Scholar API to fetch academic paper data. The received data is processed and saved into both JSON and CSV in corresponding directories under specified filenames.
 
-### Dependencies
+### Running the Script
 
-The script requires several Python libraries, including:
+The `reviewSET.py` script is run using the following command line arguments:
 
-- pandas
-- requests
-- json
-- argparse
+```bash
+python reviewSET.py --offset <Starting index of API fetching> --data_folder <directory containing csv files> --json_folder <directory containing json files> --query <search keyword> --fields <fields to retrieve> --limit <maximum number of records> --cap <ending index of API fetching>
+```
 
-(you can run the requirements.sh script to install these libraries)
-
-Ensure these libraries are installed before running the script.
-
-### Functions
-
-The script includes several functions:
-
-- `obtain_string_from_list`: Transforms a list of strings into a single string.
-- `combine_keywords`: Combines multiple keyword arguments into a single string.
-- `obtain_keywords`: Retrieves the keywords for the API request.
-- `send_request_and_process_response`: Sends a request to the Semantic Scholar API, processes the response, and saves the data.
-
-### Execution
-
-The script runs a loop that sends a request to the Semantic Scholar API every 10 minutes. The response is processed and the data is saved. To run the script, use the command `python reviewSET.py`.
-
-### Arguments
+#### Arguments
+Due to API restrictions, there is a 10-minute wait between each API request. This delay is automatically handled by the script.
 
 The script accepts several command line arguments:
 
