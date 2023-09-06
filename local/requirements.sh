@@ -1,3 +1,5 @@
+conda create -n reviews python=3.9
+conda activate reviews
 pip install pandas 
 pip install request 
 pip install argparse 
